@@ -1,30 +1,39 @@
 package machine;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class CoffeeMachine {
+
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
 
+        System.out.println("Write how many ml of water the coffee machine has:");
+        int supplyOfWater = scanner.nextInt();
+        System.out.println("Write how many ml of milk the coffee machine has:");
+        int supplyOfMilk = scanner.nextInt();
+        System.out.println("Write how many grams of coffee beans the coffee machine has:");
+        int supplyOfCoffeeBeans = scanner.nextInt();
+
+        int availableCupsOfCoffee = countMaximumCupsOfCoffee(supplyOfWater, supplyOfMilk, supplyOfCoffeeBeans);
+
         System.out.println("Write how many cups of coffee you will need:");
-        int cupsOfCoffee = scanner.nextInt();
-        System.out.println(String.format("For %d cups of coffee you will need:", cupsOfCoffee));
-        System.out.println(String.format("%d ml of water",countNeededWater(cupsOfCoffee)));
-        System.out.println(String.format("%d ml of milk", countNeededMilk(cupsOfCoffee)));
-        System.out.println(String.format("%d g of coffee bean", countNee1dedCoffeeBeans(cupsOfCoffee)));
+        int requiredCupsOfCoffee = scanner.nextInt();
 
+        if (requiredCupsOfCoffee == availableCupsOfCoffee) {
+            System.out.println("Yes, I can make that amount of coffee ");
+        } else if (requiredCupsOfCoffee < availableCupsOfCoffee) {
+            System.out.println(String.format("Yes, I can make that amount of coffee( and even %d more than that)", availableCupsOfCoffee - requiredCupsOfCoffee));
+        }
+        else{
+            System.out.println(String.format("No, I can make only %d cup(s) of coffee", availableCupsOfCoffee));
+        }
     }
 
-    public static int countNeededWater(int cupsOfCoffee){
-        return cupsOfCoffee * 200;
+    public static int countMaximumCupsOfCoffee(int supplyOfWater, int supplyOfMilk, int supplyOfCoffeeBeans) {
+        Integer[] availableCoffees = {supplyOfWater / 200, supplyOfMilk / 50, supplyOfCoffeeBeans / 15};
+        return Collections.min(Arrays.asList(availableCoffees));
     }
-
-    public static int countNeededMilk(int cupsOfCoffee){
-        return cupsOfCoffee * 50;
-    }
-
-    public static int countNee1dedCoffeeBeans(int cupsOfCoffee){
-        return cupsOfCoffee * 15;
-    }
-
 }
