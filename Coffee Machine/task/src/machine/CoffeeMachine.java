@@ -6,35 +6,45 @@ public class CoffeeMachine {
 
     static Scanner scanner = new Scanner(System.in);
 
-    static int supplyOfWater = 1200;
-    static int supplyOfMilk = 540;
-    static int supplyOfCoffeeBeans = 120;
-    static int disposableCups = 9;
-    static int money = 550;
+    private static int supplyOfWater = 1200;
+    private static int supplyOfMilk = 540;
+    private static int supplyOfCoffeeBeans = 120;
+    private static int disposableCups = 9;
+    private static int money = 550;
 
     public static void main(String[] args) {
 
         printState();
-        String action = selectAction();
+        boolean shouldBreak = false;
 
-        switch (action) {
-            case "buy":
-                buy();
-                break;
+        do {
+            String action = selectAction();
 
-            case "fill":
-                fill();
-                break;
+            switch (action) {
+                case "buy":
+                    buy();
+                    break;
 
-            case "take":
-                take();
-                break;
+                case "fill":
+                    fill();
+                    break;
 
-            default:
-                System.out.println("Unsupported operation");
-                break;
-        }
-        printState();
+                case "take":
+                    take();
+                    break;
+                case "exit":
+                    shouldBreak = true;
+                    break;
+                case "remaining":
+                    printState();
+                    break;
+
+                default:
+                    System.out.println("Unsupported operation");
+                    break;
+            }
+            printState();
+        } while (!shouldBreak);
     }
 
     static void printState() {
@@ -47,33 +57,61 @@ public class CoffeeMachine {
     }
 
     static String selectAction() {
-        System.out.println("Write action (buy, fill, take):");
+        System.out.println("Write action (buy, fill, take, exit):");
         return scanner.nextLine();
     }
 
     private static void buy() {
-        System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino: 3");
+        System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino: 3, back - to main menu");
         String coffeeType = scanner.nextLine();
         switch (coffeeType) {
             case "1":
-                makeEspresso();
+                if(isPossibleToMakeCoffee(250,16,1)){
+                    makeEspresso();
+                }
                 break;
             case "2":
-                makeLatte();
+                if (isPossibleToMakeCoffee(350, 75,20)){
+                    makeLatte();
+                }
                 break;
             case "3":
-                makeCappucino();
+                if (isPossibleToMakeCoffee(200,100,12)){
+                    makeCappuccino();
+                }
+                break;
+            case "back":
                 break;
             default:
                 System.out.println("Unavailable coffee type");
         }
     }
 
+    private static boolean isPossibleToMakeCoffee(int requiredWater, int requiredMilk, int requiredCoffeeBeans){
+        if (requiredWater > supplyOfWater){
+            System.out.println("Sorry, not enough water!");
+            return false;
+        } else if(requiredMilk > supplyOfMilk){
+            System.out.println("Sorry, not enough milk!");
+            return false;
+        } else if(requiredCoffeeBeans > supplyOfCoffeeBeans){
+            System.out.println("Sorry, not enough coffee beans");
+            return false;
+        } else if( disposableCups == 0){
+            System.out.println("Sorry, not enough coffee cups");
+            return false;
+        } else {
+            System.out.println("I have enough resources, making you a coffee!");
+            return true;
+        }
+
+    }
+
     private static void makeEspresso() {
-        supplyOfWater -= 250;
-        supplyOfCoffeeBeans -= 16;
-        disposableCups -= 1;
-        money += 4;
+            supplyOfWater -= 250;
+            supplyOfCoffeeBeans -= 16;
+            disposableCups -= 1;
+            money += 4;
     }
 
     private static void makeLatte() {
@@ -84,7 +122,7 @@ public class CoffeeMachine {
         money += 7;
     }
 
-    private static void makeCappucino() {
+    private static void makeCappuccino() {
         supplyOfWater -= 200;
         supplyOfMilk -= 100;
         supplyOfCoffeeBeans -= 12;
@@ -92,7 +130,8 @@ public class CoffeeMachine {
         money += 6;
     }
 
-    private static void fill(){
+
+    private static void fill() {
         System.out.println("Write how many ml of water do you want to add:");
         supplyOfWater += scanner.nextInt();
         System.out.println("Write how many ml of milk do you want to add:");
@@ -103,8 +142,9 @@ public class CoffeeMachine {
         disposableCups += scanner.nextInt();
     }
 
-    private static void take(){
-        System.out.println(String.format("I gave you #d", money));
+    private static void take() {
+        System.out.println(String.format("I gave you %d", money));
         money = 0;
     }
+
 }
